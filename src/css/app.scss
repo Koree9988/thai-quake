@@ -1,0 +1,115 @@
+// app global css in SCSS form
+
+.border-blues {
+  border-color: blue;
+}
+
+.div {
+  border-color: white;
+}
+
+.custom-input {
+  border-color: blue;
+  color: white;
+}
+
+.opacity-7 {
+  opacity: 0.7;
+}
+
+.opacity-5 {
+  opacity: 0.5;
+}
+
+.opacity-2 {
+  opacity: 0.2;
+}
+.bg-opacity-2 {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.slidebar-color {
+  /* your existing styles */
+
+  /* For Chrome/Webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $blue-gray-10;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: $primary;
+    border-radius: 5px;
+  }
+}
+
+/* For Chrome, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $amber; /* Color of the scroll thumb */
+  border-radius: 5px; /* Optional: if you want a round scroll thumb */
+}
+
+::-webkit-scrollbar-track {
+  background: $blue-gray-10; /* Color of the track */
+}
+
+/* For Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #027be3 #f1f1f1;
+}
+
+.my-sticky-header-table {
+  /* height or max-height is important */
+  height: 200px;
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th {
+    /* bg color is important for th; just specify one */
+    background-color: $blue-gray-10;
+  }
+
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+
+  thead tr:first-child th {
+    top: 0;
+  }
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th {
+    /* height of all previous header rows */
+    top: 48px;
+  }
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px;
+  }
+}
+
+.my-tb-header {
+  background-color: $blue-gray-10;
+  color: $amber;
+}
+
+#chart {
+  max-width: 650px;
+  margin: 35px auto;
+}
+
+.apexcharts-tooltip {
+  // background-color: $blue-gray-10
+  background: $blue-gray-10 !important;
+}

@@ -1,0 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;600&family=Poppins:ital,wght@0,100;0,400;0,500;1,200&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
