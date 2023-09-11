@@ -6,7 +6,12 @@
       KNOWNLEDGE
     </div>
     <div class="col-span-12 q-pt-xs q-px-md lg:q-px-xl">
-      <q-card class="row justify-center text-white bg-slate-800 font-Poppins">
+      <KnownledgeComponent
+        v-for="(item, index) in knownledgeData"
+        :key="index"
+        :data="item"
+      />
+      <!-- <q-card class="row justify-center text-white bg-slate-800 font-Poppins">
         <q-card-section> </q-card-section>
         <q-card-section>
           {{ lorem }}
@@ -19,14 +24,13 @@
         <q-card-section>
           {{ lorem }}
         </q-card-section>
-      </q-card>
+      </q-card> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import KnownledgeComponent from 'src/components/KnownledgeComponent.vue';
+import knownledgeData from '../../public/data/knownledge.json';
 // import { ref } from 'vue';
-
-const lorem =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 </script>

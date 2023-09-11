@@ -1,0 +1,34 @@
+[
+  {
+    "IMG_URL": ["scrape.png"],
+    "TITLE": "Web Scraping",
+    "TEXT": [
+      "Web scraping is the process of automatically extracting information from websites using software or scripts. The extracted data can be saved in a structured format, such as a spreadsheet or a database, for further analysis or use. Web scraping can be used to gather information on products, prices, news articles, or any other publicly available data on websites an example of a web scraping library is Beautiful Soup.",
+      "Beautiful Soup is a popular Python library that is used for web scraping and parsing HTML or XML documents. It allows developers to easily extract data from web pages, making it an essential tool for data science, web development, and more. The library sits on top of an HTML or XML parser, which means that it takes the output from the parser and provides a Pythonic interface for manipulating the data.",
+      "With Beautiful Soup, you can navigate through the parse tree and extract the information that you need, using various search and filtering methods. You can search for specific tags, attributes, and text content, and you can modify the parse tree by adding, removing, or updating elements. The library also supports a wide range of HTML and XML parsers, including lxml, html5lib, and more, which makes it highly versatile and adaptable to different use cases.",
+      "Additionally, Beautiful Soup has a robust set of features that make it a great choice for web scraping and parsing. For example, it can handle broken or malformed HTML or XML documents, it provides the ability to automatically convert HTML or XML entities to Unicode characters, and it can handle different encoding standards, such as UTF-8, UTF-16, and others. These features make Beautiful Soup a reliable and efficient tool for working with web pages and HTML or XML data [1]."
+    ]
+  },
+  {
+    "IMG_URL": ["series-data.png"],
+    "TITLE": "Time Series Data",
+    "TEXT": [
+      "Time series data refers to a set of observations that are collected at different points in time. These observations can be of various types, such as economic data, weather data, stock prices, or any other data that is recorded at regular intervals. The objective of time series analysis is to understand how the data is changing over time and to identify any patterns or trends in the data.",
+      "To represent time series data, it is common to plot the observations on a graph. One axis of the graph represents the time dimension, while the other axis represents the magnitude of the observations. By plotting the observations in this way, it is possible to visualize the overall trend in the data, as well as any patterns or fluctuations that may occur.",
+      "In addition to visualizing the data, time series analysis often involves using statistical techniques to model the data and make predictions about future observations. This can involve using mathematical models, such as regression analysis or time series models, to identify the underlying relationships in the data and make forecasts about future trends.",
+      "Overall, time series data is an important tool for a wide range of industries and disciplines, as it provides a valuable way to understand and analyze changes in data over time.",
+      "Time series is an important class of temporal data objects and it can be easily obtained from scientific and financial applications. A time series is a collection of observations made chronologically. The nature of time series data includes a large data size, high dimensionality, and the necessity to update continuously. Moreover, time series data, which is characterized by its numerical and continuous nature [2]."
+    ]
+  },
+  {
+    "IMG_URL": ["freq-data.png", "fourier-equation.png"],
+    "TITLE": "Fourier Transform",
+    "TEXT": [
+      "The Fourier transform is a mathematical technique that is used to transform a signal from the time domain to the frequency domain [9].",
+      "In the frequency domain, a signal is represented as a sum of sinusoidal waves of different frequencies and amplitudes. The Fourier transform allows us to analyze a signal and determine the frequency content of that signal. This is useful in many fields, such as audio signal processing, image processing, and communication systems.",
+      "The one-dimensional Discrete Fourier Transform (DFT) is defined as follows [11]:",
+      "img",
+      "In summary, the Fourier transform is a mathematical tool that helps us understand the frequency content of a signal. It is used in many applications where analyzing the frequency characteristics of a signal is important, such as audio and image processing, communication systems, and many other fields [3]."
+    ]
+  }
+]
