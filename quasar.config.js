@@ -59,7 +59,7 @@ module.exports = configure(function (/* ctx */) {
       // vueOptionsAPI: false,
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
-
+      productName: 'Thai Quake',
       // publicPath: '/',
       // analyze: true,
       env: require('dotenv').config(/* ... */).parsed,
