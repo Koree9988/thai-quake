@@ -3,82 +3,80 @@
     <q-table
       :key="chartKey"
       dark
-      title="Life Earthquake Data"
+      title="Live Earthquake Data"
       title-class="text-h5 text-amber"
-      :rows="rows"
+      :rows="liveData"
       :columns="columns"
       row-key="name"
       flat
       bordered
       class="h-screen max-h-[600px] my-sticky-header-table slidebar-color"
       color="amber"
-      :pagination="initialPagination"
+      :rows-per-page-options="[10, 20, 30, 50, 100]"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import datas from './tempData.json';
 import { QTableProps } from 'quasar';
 import moment from 'moment';
 
 // const tableKey = ref(0);
 
-const initialPagination = ref({
-  sortBy: 'desc',
-  descending: false,
-  page: 1,
-  rowsPerPage: 10,
+const { liveData } = defineProps({
+  liveData: Array,
 });
-const rows = ref(datas);
 
 const columns: QTableProps['columns'] = [
   {
-    name: 'Date',
+    name: 'dateUtc',
     required: true,
     label: 'Date and Time',
     align: 'left',
-    field: 'Date',
-    format: (val: string) => {
+    field: 'dateUtc',
+    format: (val: Date) => {
       // return reformatDate(val);
       // const strDate = moment(reformatDate(val)).format('DD/MM/YYYY HH:mm:ss');
       // if (strDate) return strDate;
       // return 2;
-      return reformatDate(val);
+      // return reformatDate(val);
+      console.log(val);
+
+      return String(val).replace('T', ' ').replace('.000Z', '');
       // return moment(new Date(reformatDate(val))).format('DD/MM/YYYY HH:mm:ss');
     },
     sortable: true,
     sort: (a: string, b: string) => {
-      return Date.parse(reformatDate(a)) - Date.parse(reformatDate(b));
+      return Date.parse(a) - Date.parse(b);
     },
     headerClasses: 'text-amber bg-blue-grey-9 text-center',
   },
   {
-    name: 'Magnitute',
+    name: 'Magnitude',
     required: true,
     align: 'center',
     label: 'Mag',
-    field: 'Magnitute',
+    field: 'magnitude',
     sortable: true,
     sort: (a: number, b: number) => a - b,
     headerClasses: 'text-amber bg-blue-grey-9 text-center',
   },
   {
-    name: 'Latitute',
+    name: 'Latitude',
     required: true,
     label: 'Lat',
     align: 'center',
-    field: 'Latitute',
+    field: 'lat',
     sortable: true,
     sort: (a: number, b: number) => a - b,
     headerClasses: 'text-amber bg-blue-grey-9 text-center',
   },
   {
-    name: 'Longitute',
+    name: 'Longitude',
     required: true,
     label: 'Long',
-    field: 'Longitute',
+    field: 'long',
     sortable: true,
     sort: (a: number, b: number) => a - b,
     headerClasses: 'text-amber bg-blue-grey-9 text-center',
@@ -86,7 +84,7 @@ const columns: QTableProps['columns'] = [
   {
     name: 'Center-En',
     label: 'Center',
-    field: 'Center-En',
+    field: 'centerEn',
     align: 'center',
     format: (val: string) => {
       if (!val) return 'N/A';
@@ -119,7 +117,7 @@ const reformatDate = (date: string) => {
 
 const chartKey = ref(0); // Reactive property to force re-render
 
-onMounted(() => {
+onMounted(async () => {
   // Add event listener for window resize
   window.addEventListener('resize', handleOrientationChange);
 });

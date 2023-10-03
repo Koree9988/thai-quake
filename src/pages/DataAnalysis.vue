@@ -1,26 +1,25 @@
 <template>
   <div class="row grid lg:grid-cols-12 gap-4 bg-dark">
     <div class="lg:col-span-7 sm:col-span-12 q-px-sm q-mt-md">
-      <q-card class="row justify-center text-white bg-slate-800">
-        <q-card-section>
-          <chart-component
-            :width="chartWidth.chart"
-            :height="chartHeight"
-            :options="chart1Options"
-            :series="chart1Series"
-          />
-        </q-card-section>
-        <q-card-section>
-          {{ lorem }}
-        </q-card-section>
-      </q-card>
       <q-card class="row q-my-lg justify-center text-white bg-slate-800">
-        <q-card-section>
+        <q-card-section class="row col-12 justify-center">
+          <div
+            class="row col-12 justify-center text-h5 text-bold text-center text-white"
+          >
+            Time Series Data
+          </div>
+          <div
+            class="row col-12 justify-center text-subtitle2 text-center text-white"
+          >
+            {{ fName }}
+          </div>
+        </q-card-section>
+        <q-card-section class="row col-12 justify-center">
           <chart-component
             :width="chartWidth.chart"
             :height="chartHeight"
-            :options="chart2Options"
-            :series="chart2Series"
+            :options="timeDomainOptions"
+            :series="timeDomainSeries"
           />
         </q-card-section>
         <q-card-section>
@@ -28,26 +27,31 @@
         </q-card-section>
       </q-card>
     </div>
-    <q-card
-      class="bg-dark sm:col-span-12 lg:col-span-5 mx-auto"
-      :style="{ width: chartWidth.table }"
-    >
-      <!-- <div class="text-white">{{ screenWidth }} : {{ screenHeight }}</div> -->
-      <table-of-raw-data />
-    </q-card>
+    <div class="lg:col-span-5 sm:col-span-12 q-px-sm q-mt-md">
+      <q-card
+        class="q-my-lg bg-dark sm:col-span-12 lg:col-span-5 mx-auto"
+        :style="{ width: chartWidth.table }"
+      >
+        <table-of-raw-data :liveData="dataLive" />
+      </q-card>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, watchEffect, onMounted } from 'vue';
 import TableOfRawData from 'components/TableOfRawData.vue';
 import ChartComponent from 'components/ChartComponent.vue';
+import { axios } from 'src/boot/axios';
 
 const mainOption = ref({
   title: {
     style: {
       color: '#ffffff', // Change title color here
     },
+  },
+  stroke: {
+    width: 3, // Set the desired line size
   },
   tooltip: {
     theme: 'dark',
@@ -70,44 +74,44 @@ const mainOption = ref({
       style: {
         colors: '#ffffff',
       },
+      datetimeFormatter: {
+        year: 'yyyy',
+        month: "MMM 'yy",
+        day: 'dd MMM',
+        hour: 'HH:mm',
+      },
     },
   },
 });
-const chart1Options = ref({
-  ...mainOption.value,
-  title: {
-    ...mainOption.value.title,
-    text: 'FFT - Earthquake data',
-  },
-  xaxis: {
-    ...mainOption.value.xaxis,
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-  },
+const fName = ref('');
+const dataLive = ref([]);
+
+onMounted(async () => {
+  try {
+    const [res, resTb] = await Promise.all([fetchData(10), fetchTable()]);
+    dataLive.value = resTb;
+    timeDomainSeries.value[0].data = res.data;
+    fName.value = res.name;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 });
 
-const chart1Series = ref([
-  {
-    name: 'range',
-    data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-  },
-]);
-
-const chart2Options = ref({
+const timeDomainOptions = ref({
   ...mainOption.value,
-  title: {
-    ...mainOption.value.title,
-    text: 'FFT - Thai Quake data',
-  },
   xaxis: {
     ...mainOption.value.xaxis,
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+    type: 'datetime',
+  },
+  title: {
+    ...mainOption.value.title,
+    text: 'Earthquake Event',
   },
 });
-
-const chart2Series = ref([
+const timeDomainSeries = ref([
   {
-    name: 'series-1',
-    data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+    name: 'Magnitude',
+    data: [],
   },
 ]);
 
@@ -136,6 +140,29 @@ const chartWidth = computed(() => {
   }
 });
 const chartHeight = computed(() => (screenWidth.value > 768 ? 250 : 200));
+
+const fetchData = async (id: number) => {
+  try {
+    const path = `/fault-data/${id}`;
+
+    const response = await axios.get(path);
+
+    if (response?.status === 200) {
+      console.log(response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchTable = async () => {
+  const response = await axios.get('/fault-data/lastweek');
+  if (response?.status === 200) {
+    console.log(response.data);
+    return response.data;
+  }
+};
 
 watchEffect(() => {
   const updateWidth = () => {
