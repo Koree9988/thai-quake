@@ -147,7 +147,12 @@ module.exports = configure(function (/* ctx */) {
       useCredentialsForManifestTag: false,
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},
-      // extendManifestJson (json) {}
+      extendManifestJson(json) {
+        json.name = 'Thai Quake';
+        json.short_name = 'Thai-Quake';
+        json.description =
+          'Thailand earthquake data analysis base on Fourier Transform ';
+      },
       // extendPWACustomSWConf (esbuildConf) {}
     },
 
