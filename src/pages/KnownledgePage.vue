@@ -3,28 +3,16 @@
     <div
       class="text-white text-h4 col-span-12 mx-auto q-my-lg text-bold font-Poppins"
     >
-      KNOWNLEDGE
+      KNOWLEDGE
     </div>
-    <div class="col-span-12 q-pt-xs q-px-md lg:q-px-xl">
+    <div
+      class="row justify-between q-mx-auto col-span-12 q-pt-xs q-px-md lg:q-px-xl max-w-screen-2xl"
+    >
       <KnownledgeComponent
         v-for="(item, index) in knownledgeData"
         :key="index"
         :data="item"
       />
-      <!-- <q-card class="row justify-center text-white bg-slate-800 font-Poppins">
-        <q-card-section> </q-card-section>
-        <q-card-section>
-          {{ lorem }}
-        </q-card-section>
-      </q-card>
-      <q-card
-        class="row justify-center q-my-md text-white bg-slate-800 font-Poppins"
-      >
-        <q-card-section> </q-card-section>
-        <q-card-section>
-          {{ lorem }}
-        </q-card-section>
-      </q-card> -->
     </div>
   </div>
 </template>

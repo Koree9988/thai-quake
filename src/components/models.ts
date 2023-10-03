@@ -19,3 +19,12 @@ export interface RawData {
   Longitute: number;
   Center: string;
 }
+export interface Series {
+  dateUtc: Date;
+  magnitude: number;
+}
+
+export interface ResSeries {
+  x: Date;
+  y: number;
+}

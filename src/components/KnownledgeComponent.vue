@@ -1,13 +1,17 @@
 <template>
   <q-card
-    class="row justify-center text-white bg-slate-800 font-Poppins q-mt-md"
+    class="row justify-center text-white bg-slate-800 font-Poppins q-ma-md"
     v-if="data"
   >
-    <q-card-section>
+    <q-card-section class="row col-12 justify-center">
       <div class="text-h5">{{ data.TITLE }}</div>
     </q-card-section>
-    <q-card-section v-for="(item, index) in data.TEXT" :key="index">
-      <div v-if="item !== 'img'" class="row q-py-sm">{{ item }}</div>
+    <q-card-section
+      class="row col-12 justify-center"
+      v-for="(item, index) in data.TEXT"
+      :key="index"
+    >
+      <div v-if="item !== 'img'" class="row q-py-md q-px-lg">{{ item }}</div>
       <div v-if="index === 0" class="row justify-center q-py-md">
         <q-img :width="chartWidth" :src="`img/${data.IMG_URL[0]}`" />
       </div>

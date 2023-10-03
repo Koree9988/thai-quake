@@ -15,7 +15,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/KnownledgePage.vue'),
       },
       { path: 'overview', component: () => import('pages/DataAnalysis.vue') },
-      { path: 'area', component: () => import('pages/ByAreaPage.vue') },
+      {
+        path: 'area',
+        component: () => import('pages/ByAreaPage.vue'),
+      },
     ],
   },
 
