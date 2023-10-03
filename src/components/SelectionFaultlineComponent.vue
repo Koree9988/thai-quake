@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { axios } from 'boot/axios';
-import { onMounted, ref, watch, defineEmits } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const emit = defineEmits(['selected-id']);
 
