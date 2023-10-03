@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { QTableProps } from 'quasar';
-import moment from 'moment';
 
 // const tableKey = ref(0);
 
@@ -96,24 +95,6 @@ const columns: QTableProps['columns'] = [
     headerClasses: 'text-amber bg-blue-grey-9 text-center',
   },
 ];
-
-const reformatDate = (date: string) => {
-  const [datePart, time] = date.split(' ');
-  const [hours, minutes] = time.split(':');
-  const [day, month, year] = datePart.split('/');
-  const dateFormat = new Date(
-    Number(year),
-    Number(month),
-    Number(day),
-    Number(hours),
-    Number(minutes)
-  );
-  // const splitTime = String(dateFormat).split(' ')[4];
-
-  return moment(dateFormat).format('DD/MM/YYYY HH:mm:ss').toString();
-
-  // return `${year}-${month}-${day} ${splitTime}`;
-};
 
 const chartKey = ref(0); // Reactive property to force re-render
 
