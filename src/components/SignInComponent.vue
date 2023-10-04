@@ -1,5 +1,5 @@
 <template>
-  <div class="items-center border-white">
+  <div class="items-center">
     <q-card
       class="container h-full max-w-max bg-opacity-2 q-py-lg q-px-md"
       flat
