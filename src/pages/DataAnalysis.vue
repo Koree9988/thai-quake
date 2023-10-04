@@ -9,7 +9,7 @@
             Time Series Data
           </div>
           <div
-            class="row col-12 justify-center text-subtitle2 text-center text-white"
+            class="row col-12 justify-center text-subtitle2 text-center text-amber"
           >
             {{ fName }}
           </div>

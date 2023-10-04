@@ -4,7 +4,7 @@
     v-if="data"
   >
     <q-card-section class="row col-12 justify-center">
-      <div class="text-h5">{{ data.TITLE }}</div>
+      <div class="text-h5 text-bold text-amber">{{ data.TITLE }}</div>
     </q-card-section>
     <q-card-section
       class="row col-12 justify-center"
