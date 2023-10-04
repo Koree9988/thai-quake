@@ -21,7 +21,7 @@
         </div>
         <div class="row justify-center mt-10 grid sm:grid-cols-2">
           <div
-            class="col row justify-center px-40 lg:px-1 my-5 ml-10 col-span-2 lg:col-span-1 lg:-mt-0"
+            class="col row justify-center px-10 md:px-40 lg:px-1 my-5 ml-10 col-span-2 lg:col-span-1 lg:-mt-0"
           >
             <q-img src="img/globe.png" style="max-width: 90%; min-width: 20%" />
           </div>
