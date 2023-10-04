@@ -19,13 +19,15 @@
         >
           THAI QUAKE
         </div>
-        <div class="row mt-5">
-          <q-img
-            src="img/globe.png"
-            class="col w-1/12 lg:w-1/5 md:w-1/6 sm:w-1/12 my-10 ml-10"
-          />
+        <div class="row justify-center mt-10 grid sm:grid-cols-2">
           <div
-            class="col row text-white font-Poppins q-mt-lg q-mx-md q-pt-xl q-px-md"
+            class="col row justify-center px-40 lg:px-1 my-5 ml-10 col-span-2 lg:col-span-1 lg:-mt-0"
+          >
+            <q-img src="img/globe.png" style="max-width: 90%; min-width: 20%" />
+          </div>
+
+          <div
+            class="col row justify-center text-white font-Poppins q-mx-md q-pt-xl q-px-md col-span-2 -mt-20 lg:-mt-0 lg:col-span-1"
           >
             <div class="text-white text-h5 lg:text-h4 q-pl-md md:q-pt-xl">
               <div class="text-bold text-white text-h4 lg:text-h3 q-mb-lg">
@@ -39,7 +41,7 @@
         </div>
       </div>
       <div
-        class="container row sm:col-span-10 lg:col-span-3 lg:col-end-11 -mt-5 lg:-mt-0 text-center"
+        class="container row sm:col-span-10 lg:col-span-3 lg:col-end-11 text-center"
       >
         <SignIn class="mx-auto" />
       </div>
