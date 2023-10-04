@@ -23,7 +23,10 @@
           />
         </q-card-section>
         <q-card-section>
-          {{ lorem }}
+          The graph above represents the magnitude of earthquake events in
+          Thailand from {{ dateStart }} until {{ dateEnd }}. Each data point
+          corresponds to a recorded earthquake event, plotted against its
+          occurrence date.
         </q-card-section>
       </q-card>
     </div>
@@ -43,11 +46,12 @@ import { ref, computed, watchEffect, onMounted } from 'vue';
 import TableOfRawData from 'components/TableOfRawData.vue';
 import ChartComponent from 'components/ChartComponent.vue';
 import { axios } from 'src/boot/axios';
-
+const dateStart = ref('2007');
+const dateEnd = ref('today');
 const mainOption = ref({
   title: {
     style: {
-      color: '#ffffff', // Change title color here
+      color: '#000000', // Change title color here
     },
   },
   stroke: {
@@ -59,20 +63,21 @@ const mainOption = ref({
   },
   chart: {
     type: 'line',
-    background: '#263238',
+    background: '#f6f6f6',
   },
-  colors: ['#ffc107', '#FF0000', '#00FF00'],
+  // colors: ['#ffc107', '#FF0000', '#00FF00'],
+  colors: ['#FF0000', '#0000FF', '#ffc107', '#008000'],
   yaxis: {
     labels: {
       style: {
-        colors: '#ffffff',
+        colors: '#000000',
       },
     },
   },
   xaxis: {
     labels: {
       style: {
-        colors: '#ffffff',
+        colors: '#000000',
       },
       datetimeFormatter: {
         year: 'yyyy',
@@ -91,6 +96,10 @@ onMounted(async () => {
     const [res, resTb] = await Promise.all([fetchData(10), fetchTable()]);
     dataLive.value = resTb;
     timeDomainSeries.value[0].data = res.data;
+    const start = res.data[0][0];
+    const end = res.data[res.data.length - 1][0];
+    dateStart.value = new Date(start).toLocaleString();
+    dateEnd.value = new Date(end).toLocaleString();
     fName.value = res.name;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -114,9 +123,6 @@ const timeDomainSeries = ref([
     data: [],
   },
 ]);
-
-const lorem =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 
 const screenWidth = ref(window.innerWidth);
 const screenHeight = ref(window.innerHeight);

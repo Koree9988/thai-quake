@@ -9,7 +9,7 @@
             Time Series Data
           </div>
           <div
-            class="row col-12 justify-center text-subtitle2 text-center text-white"
+            class="row col-12 justify-center text-subtitle2 text-center text-amber"
           >
             {{ displayName }}
           </div>
@@ -24,7 +24,10 @@
           />
         </q-card-section>
         <q-card-section>
-          {{ lorem }}
+          The graph above represents the magnitude of earthquake events in
+          Thailand from {{ dateStart }} until {{ dateEnd }}. Each data point
+          corresponds to a recorded earthquake event, plotted against its
+          occurrence date.
         </q-card-section>
       </q-card>
       <q-card class="row q-my-lg justify-center text-white bg-slate-800">
@@ -35,7 +38,7 @@
             Frequency Data
           </div>
           <div
-            class="row col-12 justify-center text-subtitle2 text-center text-white"
+            class="row col-12 justify-center text-subtitle2 text-center text-amber"
           >
             {{ displayName }}
           </div>
@@ -95,6 +98,8 @@ import SelectionFaultlineComponent from 'src/components/SelectionFaultlineCompon
 import ChartComponent from 'components/ChartComponent.vue';
 import axios from 'axios';
 
+const dateStart = ref('2007');
+const dateEnd = ref('today');
 const fName = ref('');
 const displayName = ref('');
 
@@ -103,7 +108,7 @@ const dense = ref(false);
 const mainOption = ref({
   title: {
     style: {
-      color: '#ffffff', // Change title color here
+      color: '#000000', // Change title color here
     },
   },
   stroke: {
@@ -115,20 +120,21 @@ const mainOption = ref({
   },
   chart: {
     type: 'line',
-    background: '#263238',
+    background: '#f6f6f6',
   },
-  colors: ['#ffc107', '#FF0000', '#00FF00'],
+  // colors: ['#ffc107', '#FF0000', '#00FF00'],
+  colors: ['#FF0000', '#0000FF', '#ffc107', '#008000'],
   yaxis: {
     labels: {
       style: {
-        colors: '#ffffff',
+        colors: '#000000',
       },
     },
   },
   xaxis: {
     labels: {
       style: {
-        colors: '#ffffff',
+        colors: '#000000',
       },
       datetimeFormatter: {
         year: 'yyyy',
@@ -207,13 +213,21 @@ const fetchById = async (data: { faultId: number }) => {
 
   timeDomainSeries.value[0].data = res.data;
   displayName.value = res.name;
+
+  const start = res.data[0][0];
+  const end = res.data[res.data.length - 1][0];
+  dateStart.value = new Date(start).toLocaleString();
+  dateEnd.value = new Date(end).toLocaleString();
 };
 
 onMounted(async () => {
   try {
     const res = await fetchData(10);
-
     timeDomainSeries.value[0].data = res.data;
+    const start = res.data[0][0];
+    const end = res.data[res.data.length - 1][0];
+    dateStart.value = new Date(start).toLocaleString();
+    dateEnd.value = new Date(end).toLocaleString();
     displayName.value = res.name;
   } catch (error) {
     console.error('Error fetching data:', error);
