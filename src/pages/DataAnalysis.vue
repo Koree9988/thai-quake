@@ -1,4 +1,7 @@
 <template>
+  <div class="row justify-center font-Poppins pt-5 bg-dark text-h4 text-bold">
+    Overview
+  </div>
   <div class="row grid lg:grid-cols-12 gap-4 bg-dark">
     <div class="lg:col-span-7 sm:col-span-12 q-px-sm q-mt-md">
       <q-card class="row q-my-lg justify-center text-white bg-slate-800">

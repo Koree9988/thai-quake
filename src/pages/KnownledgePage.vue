@@ -3,8 +3,9 @@
     <div
       class="text-white text-h4 col-span-12 mx-auto q-my-lg text-bold font-Poppins"
     >
-      KNOWLEDGE
+      Knowledge
     </div>
+
     <div
       class="row justify-between q-mx-auto col-span-12 q-pt-xs q-px-md lg:q-px-xl max-w-screen-2xl"
     >

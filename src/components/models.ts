@@ -28,3 +28,15 @@ export interface ResSeries {
   x: Date;
   y: number;
 }
+
+export type FourierData = DataRange[];
+
+export interface DataRange {
+  data: number[][];
+  range: Range;
+}
+
+export interface Range {
+  end: string;
+  start: string;
+}

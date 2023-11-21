@@ -1,7 +1,7 @@
 <template>
-  <q-layout class="bg-dark" view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar dark>
+      <q-toolbar>
         <q-toolbar-title class="font-Poppins text-center">
           <div class="text-bold">EARTHQUAKE ANALYSIS</div>
           <div class="text-sm">BASED ON FOURIER TRANSFORM</div>
@@ -71,6 +71,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { Dark } from 'quasar';
+
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';
@@ -101,6 +103,9 @@ const essentialLinks: EssentialLinkProps[] = [
 const drawerMenu = ref(false);
 const tab = ref('1');
 const miniState = ref(true);
+
+Dark.set(false);
+Dark.toggle();
 
 function toggleLeftDrawer() {
   drawerMenu.value = !drawerMenu.value;

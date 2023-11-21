@@ -1,28 +1,4 @@
 <template>
-  <div class="row justify-center font-Poppins pt-5 bg-dark text-h4 text-bold">
-    Earthquake Analysis
-  </div>
-  <div class="row justify-center font-Poppins pt-2 bg-dark text-h6 text-amber">
-    {{ displayName }}
-  </div>
-  <div class="row justify-end px-3 py-3 bg-dark">
-    <q-select
-      color="orange"
-      filled
-      v-model="searchFault"
-      :options="options"
-      label="Select Group of Faut Line"
-      class="w-full md:w-4/5 max-w-lg min-w-md"
-    >
-      <template v-if="searchFault" v-slot:append>
-        <q-icon
-          name="cancel"
-          @click.stop.prevent="searchFault = { label: 'PHA YAO', value: 10 }"
-          class="cursor-pointer"
-        />
-      </template>
-    </q-select>
-  </div>
   <div class="row grid lg:grid-cols-12 gap-4 bg-dark">
     <div class="lg:col-span-8 sm:col-span-12 q-px-sm q-mt-md">
       <q-card class="row justify-center text-white bg-slate-800">
@@ -82,56 +58,65 @@
         </q-card-section>
       </q-card>
     </div>
+    <q-card
+      class="bg-dark sm:col-span-12 text-white bg-slate-800 lg:col-span-4 mx-auto"
+      :style="{ width: chartWidth.table }"
+    >
+      <div class="w-11/12 q-mx-sm">
+        <q-input
+          standout="bg-grey-9 text-white"
+          type="text"
+          v-model="fName"
+          label="Search Fault Name"
+          label-color="blue"
+          :dense="dense"
+          icon="search"
+          class="q-mt-md"
+          :input-style="{ color: 'white' }"
+        >
+          <template v-slot:prepend>
+            <q-icon name="search" color="blue" />
+          </template>
+        </q-input>
+      </div>
+
+      <div class="text-subtitle font-Poppins q-px-md">
+        Faultline : {{ fName }}
+      </div>
+
+      <SelectionFaultlineComponent
+        @selected-id="fetchById"
+        :name="fName"
+        class="font-Poppins"
+      />
+    </q-card>
   </div>
 </template>
 
 <script setup lang="ts">
-//*********************************************** */
-//**********************Import******************* */
-//*********************************************** */
-import { ref, watch, computed, watchEffect, onMounted } from 'vue';
-// import SelectionFaultlineComponent from 'src/components/SelectionFaultlineComponent.vue';
+import { ref, computed, watchEffect, onMounted } from 'vue';
+import SelectionFaultlineComponent from 'src/components/SelectionFaultlineComponent.vue';
 import ChartComponent from 'components/ChartComponent.vue';
 import axios from 'axios';
 import { apiAnalysis } from 'src/boot/axios';
 
-//*********************************************** */
-//***********************Type******************** */
-//*********************************************** */
 type ArrayFourierData = {
   NFFT: number[][][];
 };
 
-//*********************************************** */
-//**********************Variable***************** */
-//*********************************************** */
+export type FreqDataSeries = eachFreq[];
 
-//search options by fault name
-const searchFault = ref({ label: 'PHA YAO', value: 10 });
-const faultListOptions = [
-  { label: 'KHLONG MARUI', value: 1 },
-  { label: 'MAE CHAN', value: 2 },
-  { label: 'MAE HONG SON', value: 3 },
-  { label: 'MAE ING', value: 4 },
-  { label: 'MOEI', value: 5 },
-  { label: 'MAE THA', value: 6 },
-  { label: 'THOEN', value: 7 },
-  { label: 'PHETCHABUN', value: 8 },
-  { label: 'PUA', value: 9 },
-  { label: 'PHA YAO', value: 10 },
-  { label: 'RANONG', value: 11 },
-  { label: 'SI SAWAT', value: 12 },
-  { label: 'THREE PAGODA', value: 13 },
-  { label: 'UTTARADIT', value: 14 },
-  { label: 'WIANG HAENG', value: 15 },
-  { label: 'MAE LAO', value: 16 },
-];
-
+export interface eachFreq {
+  name: string;
+  data: number[];
+}
 const N = ref(100);
 const dateStart = ref('2007');
 const dateEnd = ref('today');
-// const fName = ref('');
+const fName = ref('');
 const displayName = ref('');
+
+const dense = ref(false);
 
 const mainOption = ref({
   title: {
@@ -208,10 +193,10 @@ const freqSeries = ref([]);
 const lorem =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 
-const options = ref(faultListOptions);
 const screenWidth = ref(window.innerWidth);
 const screenHeight = ref(window.innerHeight);
 const chartWidth = computed(() => {
+  console.log('🚀  screenWidth:', screenWidth.value);
   if (screenWidth.value > 1600) {
     return { chart: 1100, table: '400px' };
   } else if (screenWidth.value > 1450) {
@@ -232,14 +217,10 @@ const chartWidth = computed(() => {
 });
 const chartHeight = computed(() => (screenWidth.value > 768 ? 400 : 200));
 
-//*********************************************** */
-//**********************Methods****************** */
-//*********************************************** */
+const fetchById = async (data: { faultId: number }) => {
+  const res = await fetchData(data.faultId);
 
-const fetchById = async (id: number) => {
-  const res = await fetchData(id);
-
-  const freqRes: ArrayFourierData = await fetchFreqData(id);
+  const freqRes: ArrayFourierData = await fetchFreqData(data.faultId);
   const newData = freqRes.NFFT;
 
   timeDomainSeries.value[0].data = res.data;
@@ -257,7 +238,6 @@ const fetchById = async (id: number) => {
         return Number(number.toFixed(4));
       }),
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 };
 
@@ -282,7 +262,6 @@ onMounted(async () => {
           return Number(number.toFixed(4));
         }),
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -317,9 +296,6 @@ const fetchFreqData = async (id: number) => {
     return [];
   }
 };
-watch(searchFault, (newVal) => {
-  fetchById(newVal.value);
-});
 
 watchEffect(() => {
   const updateWidth = () => {
