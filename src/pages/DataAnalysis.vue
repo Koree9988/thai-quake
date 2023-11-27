@@ -1,13 +1,15 @@
 <template>
-  <div class="row justify-center font-Poppins pt-5 bg-dark text-h4 text-bold">
+  <div
+    class="row justify-center text-black font-Poppins pt-5 text-3xl md:text-4xl text-bold"
+  >
     Overview
   </div>
-  <div class="row grid lg:grid-cols-12 gap-4 bg-dark">
+  <div class="row grid lg:grid-cols-12 gap-4">
     <div class="lg:col-span-7 sm:col-span-12 q-px-sm q-mt-md">
       <q-card class="row q-my-lg justify-center text-white bg-slate-800">
         <q-card-section class="row col-12 justify-center">
           <div
-            class="row col-12 justify-center text-h5 text-bold text-center text-white"
+            class="row col-12 justify-center text-2xl text-bold text-center text-white"
           >
             Time Series Data
           </div>
@@ -25,7 +27,7 @@
             :series="timeDomainSeries"
           />
         </q-card-section>
-        <q-card-section>
+        <q-card-section class="text-base lg:text-lg">
           The graph above represents the magnitude of earthquake events in
           Thailand from {{ dateStart }} until {{ dateEnd }}. Each data point
           corresponds to a recorded earthquake event, plotted against its
@@ -35,7 +37,7 @@
     </div>
     <div class="lg:col-span-5 sm:col-span-12 q-px-sm q-mt-md">
       <q-card
-        class="q-my-lg bg-dark sm:col-span-12 lg:col-span-5 mx-auto"
+        class="q-my-lg sm:col-span-12 lg:col-span-5 mx-auto"
         :style="{ width: chartWidth.table }"
       >
         <table-of-raw-data :liveData="dataLive" />
@@ -130,25 +132,26 @@ const timeDomainSeries = ref([
 const screenWidth = ref(window.innerWidth);
 const screenHeight = ref(window.innerHeight);
 const chartWidth = computed(() => {
-  if (screenWidth.value > 1200) {
-    return { chart: 600, table: '500px' };
-  } else if (screenWidth.value > 1024) {
-    return { chart: 600, table: '460px' };
+  if (screenWidth.value > 1600) {
+    return { chart: 1050, table: '650px' };
+  } else if (screenWidth.value > 1450) {
+    return { chart: 850, table: '550px' };
+  } else if (screenWidth.value > 1020) {
+    return { chart: 600, table: '360px' };
   } else if (screenWidth.value > 768) {
     if (screenHeight.value < 1140) {
-      return { chart: 500, table: '700px' };
+      return { chart: 550, table: '600px' };
     }
-    return { chart: 500, table: '500px' };
-    // return 500; // Medium screens
+    return { chart: 500, table: '400px' };
   } else {
     return {
       chart: screenWidth.value - 50,
       table: `${screenWidth.value - 10}px`,
     };
-    // return 350; // Small screens
   }
 });
-const chartHeight = computed(() => (screenWidth.value > 768 ? 250 : 200));
+
+const chartHeight = computed(() => (screenWidth.value > 768 ? 400 : 200));
 
 const fetchData = async (id: number) => {
   try {

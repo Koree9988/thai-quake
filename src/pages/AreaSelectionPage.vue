@@ -1,5 +1,5 @@
 <template>
-  <div class="row grid lg:grid-cols-12 gap-4 bg-dark">
+  <div class="row grid lg:grid-cols-12 gap-4">
     <div class="lg:col-span-8 sm:col-span-12 q-px-sm q-mt-md">
       <q-card class="row justify-center text-white bg-slate-800">
         <q-card-section class="row col-12 justify-center">

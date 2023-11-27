@@ -15,7 +15,7 @@ declare module '@vue/runtime-core' {
 // for each client)
 
 const apiAnalysis = axios.create({
-  baseURL: 'http://localhost:5000/api/analysis/fft',
+  baseURL: 'https://thai-quake-nfft-7msd4xrndq-as.a.run.app/api/analysis/fft',
 });
 axios.defaults.baseURL = 'https://thai-quake-api-7msd4xrndq-as.a.run.app/api';
 // string(process.env['_API_URL']);

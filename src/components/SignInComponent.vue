@@ -6,37 +6,37 @@
       bordered
     >
       <q-card-section class="q-gutter-y-sm">
-        <div class="text-h4 text-white font-Poppins">Sign In</div>
+        <div class="text-h4 text-primary font-Poppins">Sign In</div>
         <div class="text-white">
           <q-input
-            color="blue"
+            color="dark"
             class="q-my-sm font-Poppins"
             label="Username"
-            label-color="blue"
+            label-color="dark"
             rounded
             outlined
             v-model="userAuth.userName"
-            :input-style="{ color: 'white' }"
+            :input-style="{ color: 'black' }"
             :rules="[(val) => !!val || 'Username is required']"
           >
             <template v-slot:prepend>
-              <q-icon name="person" color="blue" />
+              <q-icon name="person" color="dark" />
             </template>
           </q-input>
           <q-input
-            color="blue"
+            color="dark"
             class="q-my-sm font-Poppins"
             label="Password"
-            label-color="blue"
+            label-color="dark"
             rounded
             outlined
             v-model="userAuth.password"
             type="password"
-            :input-style="{ color: 'white' }"
+            :input-style="{ color: 'black' }"
             :rules="[(val) => !!val || 'Password is required']"
           >
             <template v-slot:prepend>
-              <q-icon name="lock" color="blue" />
+              <q-icon name="lock" color="dark" />
             </template>
           </q-input>
         </div>
@@ -45,13 +45,13 @@
             class="col font-Poppins"
             rounded
             outline
-            color="blue"
+            color="primary"
             label="Sign In"
             @click="checkUser"
           />
         </div>
-        <q-separator color="white" inset />
-        <div class="text-subtitle1 text-white text-center font-Poppins">OR</div>
+        <!-- <q-separator color="dark" inset /> -->
+        <div class="text-subtitle1 text-black text-center font-Poppins">OR</div>
 
         <div class="q-px-sm text-center">
           <div class="q-gutter-x-lg">
@@ -74,13 +74,12 @@
           </div>
         </div>
         <br />
-        <q-separator color="white" inset />
+        <!-- <q-separator color="white" inset /> -->
         <div class="row text-center">
           <q-btn
             class="col font-Poppins"
             rounded
-            outline
-            color="yellow"
+            color="primary"
             label="Guest"
             :to="{ path: '/main/knownledge' }"
           />

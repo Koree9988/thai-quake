@@ -1,15 +1,19 @@
 <template>
-  <div class="row justify-center font-Poppins pt-5 bg-dark text-h4 text-bold">
+  <div
+    class="row justify-center font-Poppins pt-5 text-black text-3xl md:text-4xl text-bold"
+  >
     Earthquake Analysis
   </div>
-  <div class="row justify-center font-Poppins pt-2 bg-dark text-h6 text-amber">
-    {{ displayName }}
-  </div>
-  <div class="row justify-end px-3 py-3 bg-dark">
+  <div class="row justify-end px-3 py-3 font-Poppins">
     <q-select
       color="orange"
       filled
       v-model="searchFault"
+      label-color="white"
+      rounded
+      bg-color="primary"
+      emit-value
+      map-options
       :options="options"
       label="Select Group of Faut Line"
       class="w-full md:w-4/5 max-w-lg min-w-md"
@@ -17,13 +21,13 @@
       <template v-if="searchFault" v-slot:append>
         <q-icon
           name="cancel"
-          @click.stop.prevent="searchFault = { label: 'PHA YAO', value: 10 }"
+          @click.stop.prevent="searchFault = 10"
           class="cursor-pointer"
         />
       </template>
     </q-select>
   </div>
-  <div class="row grid lg:grid-cols-12 gap-4 bg-dark">
+  <div class="row grid lg:grid-cols-12 gap-4">
     <div class="lg:col-span-8 sm:col-span-12 q-px-sm q-mt-md">
       <q-card class="row justify-center text-white bg-slate-800">
         <q-card-section class="row col-12 justify-center">
@@ -47,7 +51,7 @@
             :series="timeDomainSeries"
           />
         </q-card-section>
-        <q-card-section>
+        <q-card-section class="text-base lg:text-lg">
           The graph above represents the magnitude of earthquake events in
           Thailand from {{ dateStart }} until {{ dateEnd }}. Each data point
           corresponds to a recorded earthquake event, plotted against its
@@ -77,11 +81,47 @@
             :series="freqSeries"
           />
         </q-card-section>
-        <q-card-section>
+        <q-card-section class="text-base lg:text-lg">
           {{ lorem }}
         </q-card-section>
       </q-card>
     </div>
+    <q-card
+      class="bg-dark sm:col-span-12 text-white bg-slate-800 lg:col-span-4 mx-auto w-11/12 q-mt-md q-mb-xl"
+    >
+      <div class="w-11/12 q-mx-sm">
+        <div class="row justify-center text-h5 text-bold font-Poppins py-6">
+          Maps of Group Fault Line
+        </div>
+        <div style="height: 768px; width: 100%" class="q-my-lg q-mx-sm">
+          <l-map
+            class="row justify-center"
+            ref="map"
+            v-model:zoom="zoom"
+            :center="(center as any)"
+            v-model:bounds="boundingArea"
+            :useGlobalLeaflet="false"
+          >
+            <l-tile-layer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              layer-type="base"
+              name="Stadia Maps Basemap"
+            ></l-tile-layer>
+            <div v-for="(polygon, index) in PolygonFault" :key="index">
+              <l-polygon
+                :lat-lngs="(polygon as any)"
+                :color="polygonColors[index]"
+                :stroke="true"
+                :weight="2"
+                :fill-opacity="polygonOpacity"
+                @click="handleMarkerClick(index)"
+                ><l-popup>{{ faultListOptions[index].label }}</l-popup>
+              </l-polygon>
+            </div>
+          </l-map>
+        </div>
+      </div>
+    </q-card>
   </div>
 </template>
 
@@ -90,10 +130,26 @@
 //**********************Import******************* */
 //*********************************************** */
 import { ref, watch, computed, watchEffect, onMounted } from 'vue';
-// import SelectionFaultlineComponent from 'src/components/SelectionFaultlineComponent.vue';
 import ChartComponent from 'components/ChartComponent.vue';
 import axios from 'axios';
 import { apiAnalysis } from 'src/boot/axios';
+
+//
+import { PolygonFault } from 'src/assets/data/lat-long-position';
+//import leaftlet
+// import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import {
+  LMap,
+  LTileLayer,
+  LPolygon,
+  LMarker,
+  LPopup,
+} from '@vue-leaflet/vue-leaflet';
+
+// import { LatLng } from 'leaflet';
+
+// import arcades from "./arcades.json"
 
 //*********************************************** */
 //***********************Type******************** */
@@ -106,8 +162,78 @@ type ArrayFourierData = {
 //**********************Variable***************** */
 //*********************************************** */
 
-//search options by fault name
-const searchFault = ref({ label: 'PHA YAO', value: 10 });
+//top left :20.932613, 95.994457
+//bottom right :5.357610, 105.854909
+
+//Leaflet Variable
+const zoom = ref(6);
+const center = ref([12.91, 99.59]);
+const topLeft = ref([20.932613, 95.994457]);
+const bottomRight = ref([5.35761, 105.854909]);
+const boundingArea = ref([topLeft, bottomRight]);
+
+//polygon and marker
+const polygonOpacity = ref(0.2);
+
+const showPopup = ref([
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+]);
+
+// const polygonCoordinates = PolygonFault.PHA_YAO;
+// const polygonCoordinatesMaeLao = PolygonFault.MAE_LAO;
+
+const selectedPolygonIndex = ref(9);
+
+const polygonColors = ref([
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'blue',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+  'gray',
+]);
+//leaflet method
+const handleMarkerClick = (index: number) => {
+  const faultId = index + 1;
+  if (selectedPolygonIndex.value !== null) {
+    polygonColors.value[selectedPolygonIndex.value] = 'gray';
+  }
+  polygonColors.value[index] = 'blue';
+  fetchById(faultId);
+  searchFault.value = faultId;
+  console.log('🚀  index:', index);
+
+  showPopup.value = showPopup.value.map((_, i) => i === index);
+
+  selectedPolygonIndex.value = index;
+};
+
+const searchFault = ref(10);
 const faultListOptions = [
   { label: 'KHLONG MARUI', value: 1 },
   { label: 'MAE CHAN', value: 2 },
@@ -317,8 +443,17 @@ const fetchFreqData = async (id: number) => {
     return [];
   }
 };
+
+const getPolygonCenter = (polygon: number[][]) => {
+  const latitudes = polygon.map((point) => point[0]);
+  const longitudes = polygon.map((point) => point[1]);
+  const centerLat = (Math.max(...latitudes) + Math.min(...latitudes)) / 2;
+  const centerLng = (Math.max(...longitudes) + Math.min(...longitudes)) / 2;
+  return [centerLat, centerLng];
+};
+
 watch(searchFault, (newVal) => {
-  fetchById(newVal.value);
+  fetchById(newVal);
 });
 
 watchEffect(() => {
