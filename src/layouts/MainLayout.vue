@@ -1,10 +1,10 @@
 <template>
-  <q-layout class="bg-dark" view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf " class="bg-slate-100">
     <q-header elevated>
-      <q-toolbar dark>
-        <q-toolbar-title class="font-Poppins text-center">
-          <div class="text-bold">EARTHQUAKE ANALYSIS</div>
-          <div class="text-sm">BASED ON FOURIER TRANSFORM</div>
+      <q-toolbar class="">
+        <q-toolbar-title class="font-Poppins text-center my-3">
+          <div class="text-bold text-2xl md:text-3xl">EARTHQUAKE ANALYSIS</div>
+          <div class="text-lg md:text-xl">BASED ON FOURIER TRANSFORM</div>
         </q-toolbar-title>
         <q-btn
           flat
@@ -15,26 +15,30 @@
           @click="toggleLeftDrawer"
         />
       </q-toolbar>
-      <q-tabs v-model="tab" class="bg-grey-9" align="right" dense>
+      <q-tabs
+        v-model="tab"
+        align="right"
+        indicator-color="transparent"
+        active-bg-color="primary"
+        active-color="white"
+        class="bg-slate-100 py-4 px-10"
+      >
         <q-route-tab
-          class="text-amber font-Poppins"
+          class="text-primary font-Poppins rounded-3xl"
           to="knownledge"
           name="1"
-          exact
           label="Knownledge"
         />
         <q-route-tab
-          class="text-amber font-Poppins"
+          class="text-primary font-Poppins rounded-3xl pa-md mx-2"
           to="overview"
           name="2"
-          exact
           label="Overview"
         />
         <q-route-tab
-          class="text-amber font-Poppins"
+          class="text-primary font-Poppins rounded-3xl"
           to="area"
           name="3"
-          exact
           label="By area"
         />
       </q-tabs>
@@ -71,6 +75,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';
