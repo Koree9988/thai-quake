@@ -12,6 +12,8 @@
 </template>
 
 <script setup lang="ts">
+import { logout } from 'src/boot/firebase';
+
 export interface EssentialLinkProps {
   title: string;
   caption?: string;
@@ -24,7 +26,11 @@ withDefaults(defineProps<EssentialLinkProps>(), {
   icon: '',
 });
 
-function goToLink(link: string) {
+const goToLink = async (link: string) => {
+  if (link == '/') {
+    const logoutData = await logout();
+    console.log('🚀  logoutData:', logoutData);
+  }
   window.location.href = link;
-}
+};
 </script>

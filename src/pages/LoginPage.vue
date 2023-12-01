@@ -2,22 +2,21 @@
   <q-page>
     <div class="grid lg:grid-cols-10 gap-4">
       <div class="sm:col-span-10 lg:col-span-10">
-        <div class="row grid sm:grid-cols-2 q-pt-xl">
+        <div class="row grid sm:grid-cols-2 q-pt-sm">
           <div
-            class="col row text-white font-Poppins q-mx-md q-pt-xl q-px-md col-span-2 -mt-20 lg:mt-20 xl:mt-28 lg:col-span-1"
+            class="col row text-white font-Poppins q-mx-md q-px-md col-span-2 mt-10 lg:mt-20 xl:mt-28 lg:col-span-1"
           >
             <div
-              class="text-black text-h5 lg:text-h4 q-pl-md md:q-pt-xl q-mx-md"
+              class="text-black text-h5 lg:text-h4 q-pl-md lg:q-pt-md q-mx-md"
             >
-              <div
-                class="text-5xl md:text-6xl text-bold text-black w-full mt-[50px] font-Poppins q-pb-xl"
-              >
+              <div class="w-full mt-[10px] font-Poppins q-pb-xl">
                 <q-img
-                  src="img/ver2.png"
-                  width="60px"
+                  src="img/logo.png"
+                  width="80px"
                   style="border-radius: 20%"
+                  class="mr-5"
                 />
-                Thai Quake
+                <q-img src="img/typelogo.png" width="150px" />
               </div>
               <div class="text-bold text-black text-4xl lg:text-h3 q-mb-lg">
                 Welcome
@@ -78,7 +77,8 @@
 </template>
 
 <script setup lang="ts">
-import SignIn from 'components/SignInComponent.vue';
+// import SignIn from 'components/SignInComponent.vue';
+import SignIn from 'components/FirebaseSignInComponent.vue';
 import { ref } from 'vue';
 
 const dialogStatus = ref(false);

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-3">
     <div
       class="row justify-center text-black text-3xl md:text-4xl mx-auto q-my-lg text-bold font-Poppins"
     >
@@ -9,7 +9,7 @@
       class="row justify-center mx-2 lg:mx-10 col-span-12 q-pt-xs lg:q-px-md max-w-screen-2xl mb-10"
     >
       <div class="w-11/12">
-        <q-card class="rounded-card">
+        <q-card class="rounded-3xl">
           <q-tabs
             v-model="tab"
             dense
