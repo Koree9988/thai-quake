@@ -1,12 +1,14 @@
 <template>
   <div
-    class="row justify-center text-black font-Poppins pt-5 text-3xl md:text-4xl text-bold"
+    class="row justify-center text-black font-Poppins pt-5 text-3xl md:text-4xl text-bold pb-3"
   >
     Overview
   </div>
-  <div class="row grid lg:grid-cols-12 gap-4">
+  <div class="row grid lg:grid-cols-12 gap-4 md:pl-20">
     <div class="lg:col-span-7 sm:col-span-12 q-px-sm q-mt-md">
-      <q-card class="row q-my-lg justify-center text-white bg-slate-800">
+      <q-card
+        class="row q-my-lg justify-center text-white bg-dark rounded-3xl font-Poppins"
+      >
         <q-card-section class="row col-12 justify-center">
           <div
             class="row col-12 justify-center text-2xl text-bold text-center text-white"
@@ -35,11 +37,8 @@
         </q-card-section>
       </q-card>
     </div>
-    <div class="lg:col-span-5 sm:col-span-12 q-px-sm q-mt-md">
-      <q-card
-        class="q-my-lg sm:col-span-12 lg:col-span-5 mx-auto"
-        :style="{ width: chartWidth.table }"
-      >
+    <div class="q-px-sm q-mt-md">
+      <q-card class="q-my-lg rounded-3xl" :style="{ width: chartWidth.table }">
         <table-of-raw-data :liveData="dataLive" />
       </q-card>
     </div>
@@ -64,7 +63,7 @@ const mainOption = ref({
   },
   tooltip: {
     theme: 'dark',
-    fillSeriesColor: false,
+    fillSeriesColor: true,
   },
   chart: {
     type: 'line',
@@ -73,6 +72,9 @@ const mainOption = ref({
   // colors: ['#ffc107', '#FF0000', '#00FF00'],
   colors: ['#FF0000', '#0000FF', '#ffc107', '#008000'],
   yaxis: {
+    title: {
+      text: 'Magnitude',
+    },
     labels: {
       style: {
         colors: '#000000',
@@ -80,6 +82,9 @@ const mainOption = ref({
     },
   },
   xaxis: {
+    title: {
+      text: 'Date',
+    },
     labels: {
       style: {
         colors: '#000000',
@@ -133,9 +138,9 @@ const screenWidth = ref(window.innerWidth);
 const screenHeight = ref(window.innerHeight);
 const chartWidth = computed(() => {
   if (screenWidth.value > 1600) {
-    return { chart: 1050, table: '650px' };
+    return { chart: 1100, table: '400px' };
   } else if (screenWidth.value > 1450) {
-    return { chart: 850, table: '550px' };
+    return { chart: 900, table: '360px' };
   } else if (screenWidth.value > 1020) {
     return { chart: 600, table: '360px' };
   } else if (screenWidth.value > 768) {

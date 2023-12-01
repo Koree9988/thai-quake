@@ -11,29 +11,38 @@
       v-for="(item, index) in data.TEXT"
       :key="index"
     >
-      <div v-if="item !== 'img'" class="row q-py-sm q-px-lg">
-        <div v-if="Array.isArray(item)">
+      <div v-if="item[0] !== 'img'" class="row q-py-sm q-px-lg">
+        <div v-if="item.length > 1">
           <li v-for="(ls, idx) in item" :key="idx" clss="text-h6">{{ ls }}</li>
         </div>
-        <div v-else>{{ item }}</div>
+        <div v-else>{{ item[0] }}</div>
       </div>
       <div v-if="index === 0" class="q-py-xs">
         <q-img
           :width="chartWidth"
           :src="`img/${data.IMG_URL[0]}`"
-          class="row justify-center bg-slate-800"
+          class="row justify-center"
         />
-        <p class="row mt-3 justify-center" v-if="data.SOURCE[0] !== ''">
+        <p
+          class="row mt-3 justify-center text-xs md:text-base"
+          v-if="data.SOURCE[0] !== ''"
+        >
           Source: {{ data.SOURCE[0] }}
         </p>
       </div>
-      <div v-if="item === 'img' && index !== 0" class="q-py-md">
+      <div
+        v-if="item[0] === 'img' && index !== 0"
+        class="q-py-xs row justify-center"
+      >
         <q-img
           :width="chartWidth"
           :src="`img/${data.IMG_URL[1]}`"
           class="row justify-center"
         />
-        <p class="row mt-3 justify-center" v-if="data.SOURCE[1] !== ''">
+        <p
+          class="row mt-3 justify-center text-xs md:text-base"
+          v-if="data.SOURCE[1] !== ''"
+        >
           Source: {{ data.SOURCE[1] }}
         </p>
       </div>
@@ -48,7 +57,7 @@ export interface Data {
   IMG_URL: string[];
   SOURCE: string[];
   TITLE: string;
-  TEXT: string[];
+  TEXT: string[][];
 }
 const screenWidth = ref(window.innerWidth);
 const screenHeight = ref(window.innerHeight);
@@ -64,7 +73,7 @@ const chartWidth = computed(() => {
     }
     return '500px';
   } else {
-    return `${screenWidth.value - 100}px`;
+    return `${screenWidth.value - 150}px`;
   }
 });
 defineProps({

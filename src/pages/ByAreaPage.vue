@@ -16,7 +16,7 @@
       map-options
       :options="options"
       label="Select Group of Faut Line"
-      class="w-full md:w-4/5 max-w-lg min-w-md"
+      class="w-full md:w-96 max-w-lg min-w-md q-pr-sm"
     >
       <template v-if="searchFault" v-slot:append>
         <q-icon
@@ -29,7 +29,7 @@
   </div>
   <div class="row grid lg:grid-cols-12 gap-4">
     <div class="lg:col-span-8 sm:col-span-12 q-px-sm q-mt-md">
-      <q-card class="row justify-center text-white bg-slate-800">
+      <q-card class="row justify-center text-white bg-dark rounded-3xl">
         <q-card-section class="row col-12 justify-center">
           <div
             class="row col-12 justify-center text-h5 text-bold text-center text-white"
@@ -58,7 +58,7 @@
           occurrence date.
         </q-card-section>
       </q-card>
-      <q-card class="row q-my-lg justify-center text-white bg-slate-800">
+      <q-card class="row q-my-lg justify-center text-white bg-dark rounded-3xl">
         <q-card-section class="row col-12 justify-center">
           <div
             class="row col-12 justify-center text-h5 text-bold text-center text-white"
@@ -87,7 +87,8 @@
       </q-card>
     </div>
     <q-card
-      class="bg-dark sm:col-span-12 text-white bg-slate-800 lg:col-span-4 mx-auto w-11/12 q-mt-md q-mb-xl"
+      class="sm:col-span-12 text-white lg:col-span-4 mx-auto w-11/12 q-mt-md q-mb-xl bg-dark rounded-3xl"
+      style="height: 900px"
     >
       <div class="w-11/12 q-mx-sm">
         <div class="row justify-center text-h5 text-bold font-Poppins py-6">
@@ -139,13 +140,7 @@ import { PolygonFault } from 'src/assets/data/lat-long-position';
 //import leaftlet
 // import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {
-  LMap,
-  LTileLayer,
-  LPolygon,
-  LMarker,
-  LPopup,
-} from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
 
 // import { LatLng } from 'leaflet';
 
@@ -209,7 +204,7 @@ const polygonColors = ref([
   'gray',
   'gray',
   'gray',
-  'blue',
+  'red',
   'gray',
   'gray',
   'gray',
@@ -223,10 +218,8 @@ const handleMarkerClick = (index: number) => {
   if (selectedPolygonIndex.value !== null) {
     polygonColors.value[selectedPolygonIndex.value] = 'gray';
   }
-  polygonColors.value[index] = 'blue';
-  fetchById(faultId);
+  polygonColors.value[index] = 'red';
   searchFault.value = faultId;
-  console.log('🚀  index:', index);
 
   showPopup.value = showPopup.value.map((_, i) => i === index);
 
@@ -253,7 +246,6 @@ const faultListOptions = [
   { label: 'MAE LAO', value: 16 },
 ];
 
-const N = ref(100);
 const dateStart = ref('2007');
 const dateEnd = ref('today');
 // const fName = ref('');
@@ -270,7 +262,7 @@ const mainOption = ref({
   },
   tooltip: {
     theme: 'dark',
-    fillSeriesColor: false,
+    fillSeriesColor: true,
   },
   chart: {
     type: 'line',
@@ -279,6 +271,9 @@ const mainOption = ref({
   // colors: ['#ffc107', '#FF0000', '#00FF00'],
   colors: ['#FF0000', '#0000FF', '#ffc107', '#008000'],
   yaxis: {
+    title: {
+      text: 'Magnitude',
+    },
     labels: {
       style: {
         colors: '#000000',
@@ -286,6 +281,9 @@ const mainOption = ref({
     },
   },
   xaxis: {
+    title: {
+      text: 'Unit',
+    },
     labels: {
       style: {
         colors: '#000000',
@@ -304,6 +302,9 @@ const timeDomainOptions = ref({
   xaxis: {
     ...mainOption.value.xaxis,
     type: 'datetime',
+    title: {
+      text: 'Date',
+    },
   },
   title: {
     ...mainOption.value.title,
@@ -321,11 +322,17 @@ const fregOptions = ref({
   ...mainOption.value,
   title: {
     ...mainOption.value.title,
-    text: 'FFT - Thai Quake data',
+    text: 'NFFT - Thai Quake data',
   },
   xaxis: {
     ...mainOption.value.xaxis,
-    categories: Array.from({ length: N.value + 1 }, (_, i) => i),
+    type: 'numeric',
+    min: 0,
+    max: 20,
+    title: {
+      text: 'Frequency',
+      offsetY: -30,
+    },
   },
 });
 
@@ -365,6 +372,8 @@ const chartHeight = computed(() => (screenWidth.value > 768 ? 400 : 200));
 const fetchById = async (id: number) => {
   const res = await fetchData(id);
 
+  handleMarkerClick(id - 1);
+
   const freqRes: ArrayFourierData = await fetchFreqData(id);
   const newData = freqRes.NFFT;
 
@@ -376,9 +385,9 @@ const fetchById = async (id: number) => {
   dateStart.value = new Date(start).toLocaleString();
   dateEnd.value = new Date(end).toLocaleString();
 
-  freqSeries.value = newData.map((element) => {
+  freqSeries.value = newData.map((element, index) => {
     return {
-      name: 'Magnitude',
+      name: `Sample:${index + 1}`,
       data: element[1].map((number) => {
         return Number(number.toFixed(4));
       }),
@@ -401,9 +410,17 @@ onMounted(async () => {
 
     const data = freqRes.NFFT;
 
-    freqSeries.value = data.map((element) => {
+    freqSeries.value = data.map((element, index) => {
+      if (index == 2) {
+        return {
+          name: `Sample:${index + 1}`,
+          data: element[1].map((number) => {
+            return Number(number.toFixed(4));
+          }),
+        };
+      }
       return {
-        name: 'Magnitude',
+        name: `Sample:${index + 1}`,
         data: element[1].map((number) => {
           return Number(number.toFixed(4));
         }),
@@ -444,13 +461,13 @@ const fetchFreqData = async (id: number) => {
   }
 };
 
-const getPolygonCenter = (polygon: number[][]) => {
-  const latitudes = polygon.map((point) => point[0]);
-  const longitudes = polygon.map((point) => point[1]);
-  const centerLat = (Math.max(...latitudes) + Math.min(...latitudes)) / 2;
-  const centerLng = (Math.max(...longitudes) + Math.min(...longitudes)) / 2;
-  return [centerLat, centerLng];
-};
+// const getPolygonCenter = (polygon: number[][]) => {
+//   const latitudes = polygon.map((point) => point[0]);
+//   const longitudes = polygon.map((point) => point[1]);
+//   const centerLat = (Math.max(...latitudes) + Math.min(...latitudes)) / 2;
+//   const centerLng = (Math.max(...longitudes) + Math.min(...longitudes)) / 2;
+//   return [centerLat, centerLng];
+// };
 
 watch(searchFault, (newVal) => {
   fetchById(newVal);

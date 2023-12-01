@@ -1,20 +1,18 @@
 <template>
-  <div class="q-px-xs bg-dark q-mb-lg">
-    <q-table
-      :key="chartKey"
-      dark
-      title="Live Earthquake Data"
-      title-class="text-h5 text-amber"
-      :rows="liveData"
-      :columns="columns"
-      row-key="name"
-      flat
-      bordered
-      class="h-screen max-h-[600px] my-sticky-header-table slidebar-color"
-      color="amber"
-      :rows-per-page-options="[10, 20, 30, 50, 100]"
-    />
-  </div>
+  <q-table
+    :key="chartKey"
+    dark
+    title="Live Earthquake Data"
+    title-class="text-h5 text-white text-bold"
+    :rows="liveData"
+    :columns="columns"
+    row-key="name"
+    flat
+    bordered
+    class="h-screen max-h-[600px] my-sticky-header-table slidebar-color rounded-3xl font-Poppins"
+    color="amber"
+    :rows-per-page-options="[10, 20, 30, 50, 100]"
+  />
 </template>
 
 <script setup lang="ts">

@@ -1,34 +1,3 @@
-<!-- <template>
-  <div>
-    <apex-charts
-      :width="width"
-      :height="height"
-      :options="options"
-      :series="series"
-      :colors="colors"
-    ></apex-charts>
-  </div>
-</template>
-
-<script setup lang="ts">
-import ApexCharts from 'vue3-apexcharts';
-import ApexOptions from 'vue3-apexcharts';
-
-export type ChartOptions = typeof ApexOptions;
-
-export interface Series {
-  name: string;
-  data: number[];
-}
-
-defineProps({
-  options: Object,
-  series: Object as () => Series[],
-  width: Number,
-  height: Number,
-  colors: Array,
-});
-</script> -->
 <template>
   <div>
     <apex-charts
