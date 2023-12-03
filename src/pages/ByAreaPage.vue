@@ -51,11 +51,13 @@
             :series="timeDomainSeries"
           />
         </q-card-section>
-        <q-card-section class="text-base lg:text-lg">
-          The graph above represents the magnitude of earthquake events in
-          Thailand from {{ dateStart }} until {{ dateEnd }}. Each data point
-          corresponds to a recorded earthquake event, plotted against its
-          occurrence date.
+        <q-card-section class="row col-12 px-12 text-base lg:text-lg">
+          <div class="row col-12 justify-start">
+            The graph above represents the magnitude of earthquake events in
+            Thailand from {{ dateStart }} until {{ dateEnd }}. Each data point
+            corresponds to a recorded earthquake event, plotted against its
+            occurrence date.
+          </div>
         </q-card-section>
       </q-card>
       <q-card class="row q-my-lg justify-center text-white bg-dark rounded-3xl">
@@ -81,8 +83,35 @@
             :series="freqSeries"
           />
         </q-card-section>
-        <q-card-section class="text-base lg:text-lg">
-          {{ lorem }}
+        <q-card-section
+          class="row col-12 px-12 font-Poppins text-base lg:text-lg"
+        >
+          <div class="row col-12 py-5 text-bold text-amber">
+            Average Magnitude
+          </div>
+          <div class="row col-12">
+            <p
+              class="row col-12 text-sm lg:text-base"
+              v-for="(avg, idx) in avgMagnitude"
+              :key="idx"
+            >
+              {{
+                `Sample-${idx + 1}: start(${
+                  summaryData[idx].range.start
+                }), end(${summaryData[idx].range.end}), average: ${avg.toFixed(
+                  4
+                )}`
+              }}
+            </p>
+          </div>
+          <div class="row col-12 py-5 text-bold text-amber">Summary</div>
+          <div class="row col-12">
+            {{ firstFreqParagraph }}
+          </div>
+          <div class="row col-12 py-3">{{ secondFreqParagraph }}</div>
+          <div class="row col-12 text-amber justify-center">
+            **** {{ noticeParagraph }}
+          </div>
         </q-card-section>
       </q-card>
     </div>
@@ -130,7 +159,7 @@
 //*********************************************** */
 //**********************Import******************* */
 //*********************************************** */
-import { ref, watch, computed, watchEffect, onMounted } from 'vue';
+import { ref, watch, computed, watchEffect, onMounted, Ref } from 'vue';
 import ChartComponent from 'components/ChartComponent.vue';
 import axios from 'axios';
 import { apiAnalysis } from 'src/boot/axios';
@@ -141,6 +170,11 @@ import { PolygonFault } from 'src/assets/data/lat-long-position';
 // import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
+import {
+  findPeaksWithThreshold,
+  paragraphOneConclude,
+  paragraphTwoConclude,
+} from 'src/service/peakFrequency.service';
 
 // import { LatLng } from 'leaflet';
 
@@ -157,15 +191,14 @@ type ArrayFourierData = {
 //**********************Variable***************** */
 //*********************************************** */
 
-//top left :20.932613, 95.994457
-//bottom right :5.357610, 105.854909
-
 //Leaflet Variable
 const zoom = ref(6);
 const center = ref([12.91, 99.59]);
 const topLeft = ref([20.932613, 95.994457]);
 const bottomRight = ref([5.35761, 105.854909]);
 const boundingArea = ref([topLeft, bottomRight]);
+
+//date range = [2557,2557,]
 
 //polygon and marker
 const polygonOpacity = ref(0.2);
@@ -191,6 +224,9 @@ const showPopup = ref([
 
 // const polygonCoordinates = PolygonFault.PHA_YAO;
 // const polygonCoordinatesMaeLao = PolygonFault.MAE_LAO;
+
+const freqPeak = ref<number[][]>([]);
+const avgMagnitude = ref<number[]>([]);
 
 const selectedPolygonIndex = ref(9);
 
@@ -338,8 +374,20 @@ const fregOptions = ref({
 
 const freqSeries = ref([]);
 
-const lorem =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+const firstFreqParagraph = ref('Not enough data.');
+const secondFreqParagraph = ref('Not enough data.');
+const summaryData: Ref<
+  {
+    range: {
+      start: string;
+      end: string;
+    };
+    count: number;
+  }[]
+> = ref([]);
+
+const noticeParagraph =
+  'This information is an estimate based on available information only.';
 
 const options = ref(faultListOptions);
 const screenWidth = ref(window.innerWidth);
@@ -375,6 +423,8 @@ const fetchById = async (id: number) => {
   handleMarkerClick(id - 1);
 
   const freqRes: ArrayFourierData = await fetchFreqData(id);
+  summaryData.value = await fetchSummary(10);
+
   const newData = freqRes.NFFT;
 
   timeDomainSeries.value[0].data = res.data;
@@ -386,6 +436,9 @@ const fetchById = async (id: number) => {
   dateEnd.value = new Date(end).toLocaleString();
 
   freqSeries.value = newData.map((element, index) => {
+    avgMagnitude.value[index] = element[1][0];
+    freqPeak.value[index] = findPeaksWithThreshold(element[1], 0.35);
+
     return {
       name: `Sample:${index + 1}`,
       data: element[1].map((number) => {
@@ -394,12 +447,27 @@ const fetchById = async (id: number) => {
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
+
+  firstFreqParagraph.value = paragraphOneConclude(
+    displayName.value,
+    freqPeak.value[0][0],
+    [
+      summaryData.value[0].count,
+      summaryData.value[1].count,
+      summaryData.value[2].count,
+    ]
+  );
+  secondFreqParagraph.value = paragraphTwoConclude(
+    avgMagnitude.value[2],
+    summaryData.value[0].count * freqPeak.value[0][0]
+  );
 };
 
 onMounted(async () => {
   try {
     const res = await fetchData(10);
     const freqRes: ArrayFourierData = await fetchFreqData(10);
+    summaryData.value = await fetchSummary(10);
 
     timeDomainSeries.value[0].data = res.data;
     const start = res.data[0][0];
@@ -411,6 +479,8 @@ onMounted(async () => {
     const data = freqRes.NFFT;
 
     freqSeries.value = data.map((element, index) => {
+      avgMagnitude.value[index] = element[1][0];
+      freqPeak.value[index] = findPeaksWithThreshold(element[1], 0.35);
       if (index == 2) {
         return {
           name: `Sample:${index + 1}`,
@@ -419,6 +489,7 @@ onMounted(async () => {
           }),
         };
       }
+
       return {
         name: `Sample:${index + 1}`,
         data: element[1].map((number) => {
@@ -427,6 +498,19 @@ onMounted(async () => {
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
+    firstFreqParagraph.value = paragraphOneConclude(
+      displayName.value,
+      freqPeak.value[0][0],
+      [
+        summaryData.value[0].count,
+        summaryData.value[1].count,
+        summaryData.value[2].count,
+      ]
+    );
+    secondFreqParagraph.value = paragraphTwoConclude(
+      avgMagnitude.value[2],
+      summaryData.value[0].count * freqPeak.value[0][0]
+    );
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -439,7 +523,20 @@ const fetchData = async (id: number) => {
     const response = await axios.get(path);
 
     if (response?.status === 200) {
-      console.log(response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchSummary = async (id: number) => {
+  try {
+    const path = `/fault-data/summary?id=${id}&range=7`;
+
+    const response = await axios.get(path);
+
+    if (response?.status === 200) {
       return response.data;
     }
   } catch (error) {
