@@ -363,11 +363,16 @@ const fregOptions = ref({
   xaxis: {
     ...mainOption.value.xaxis,
     type: 'numeric',
-    min: 0,
+    min: 1,
     max: 20,
     title: {
       text: 'Frequency',
-      offsetY: -30,
+      offsetY: 0,
+    },
+    labels: {
+      formatter: function (value: number) {
+        return value - 1;
+      },
     },
   },
 });
@@ -438,6 +443,14 @@ const fetchById = async (id: number) => {
   freqSeries.value = newData.map((element, index) => {
     avgMagnitude.value[index] = element[1][0];
     freqPeak.value[index] = findPeaksWithThreshold(element[1], 0.35);
+    if (index == 2) {
+      return {
+        name: `Sample:${index + 1}`,
+        data: element[1].map((number) => {
+          return Number(number.toFixed(4));
+        }),
+      };
+    }
 
     return {
       name: `Sample:${index + 1}`,
@@ -482,6 +495,11 @@ onMounted(async () => {
       avgMagnitude.value[index] = element[1][0];
       freqPeak.value[index] = findPeaksWithThreshold(element[1], 0.35);
       if (index == 2) {
+        const temp = element[1].map((number) => {
+          return Number(number.toFixed(4));
+        });
+        console.log('🚀  temp:', temp);
+
         return {
           name: `Sample:${index + 1}`,
           data: element[1].map((number) => {
