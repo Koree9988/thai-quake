@@ -108,6 +108,9 @@
           <div class="row col-12">
             {{ firstFreqParagraph }}
           </div>
+          <div class="row col-12 py-3">
+            {{ calculationParagraph }}
+          </div>
           <div class="row col-12 py-3">{{ secondFreqParagraph }}</div>
           <div class="row col-12 text-amber justify-center">
             **** {{ noticeParagraph }}
@@ -171,10 +174,13 @@ import { PolygonFault } from 'src/assets/data/lat-long-position';
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
 import {
+  calculationPart,
   findPeaksWithThreshold,
   paragraphOneConclude,
   paragraphTwoConclude,
 } from 'src/service/peakFrequency.service';
+import dayjs from 'dayjs';
+import { start } from 'repl';
 
 // import { LatLng } from 'leaflet';
 
@@ -354,6 +360,8 @@ const timeDomainSeries = ref([
   },
 ]);
 
+const sampleDateDiff = ref(0);
+
 const fregOptions = ref({
   ...mainOption.value,
   title: {
@@ -379,6 +387,7 @@ const fregOptions = ref({
 
 const freqSeries = ref([]);
 
+const calculationParagraph = ref('Not enough data.');
 const firstFreqParagraph = ref('Not enough data.');
 const secondFreqParagraph = ref('Not enough data.');
 const summaryData: Ref<
@@ -427,12 +436,20 @@ const fetchById = async (id: number) => {
 
   handleMarkerClick(id - 1);
 
+  const rangeDate = await fetchSeparateData(id);
+
   const freqRes: ArrayFourierData = await fetchFreqData(id);
   summaryData.value = await fetchSummary(10);
 
   const newData = freqRes.NFFT;
 
   timeDomainSeries.value[0].data = res.data;
+
+  sampleDateDiff.value = await calculateDateDiff(
+    rangeDate[1].data[0][0],
+    rangeDate[1].data.at(-1)[0]
+  );
+
   displayName.value = res.name;
 
   const start = res.data[0][0];
@@ -461,6 +478,10 @@ const fetchById = async (id: number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 
+  calculationParagraph.value = calculationPart(
+    sampleDateDiff.value,
+    freqPeak.value[0][0]
+  );
   firstFreqParagraph.value = paragraphOneConclude(
     displayName.value,
     freqPeak.value[0][0],
@@ -482,6 +503,13 @@ onMounted(async () => {
     const freqRes: ArrayFourierData = await fetchFreqData(10);
     summaryData.value = await fetchSummary(10);
 
+    const rangeDate = await fetchSeparateData(10);
+
+    sampleDateDiff.value = await calculateDateDiff(
+      rangeDate[1].data[0][0],
+      rangeDate[1].data.at(-1)[0]
+    );
+
     timeDomainSeries.value[0].data = res.data;
     const start = res.data[0][0];
     const end = res.data[res.data.length - 1][0];
@@ -498,7 +526,6 @@ onMounted(async () => {
         const temp = element[1].map((number) => {
           return Number(number.toFixed(4));
         });
-        console.log('🚀  temp:', temp);
 
         return {
           name: `Sample:${index + 1}`,
@@ -516,6 +543,11 @@ onMounted(async () => {
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
+
+    calculationParagraph.value = calculationPart(
+      sampleDateDiff.value,
+      freqPeak.value[0][0]
+    );
     firstFreqParagraph.value = paragraphOneConclude(
       displayName.value,
       freqPeak.value[0][0],
@@ -527,16 +559,38 @@ onMounted(async () => {
     );
     secondFreqParagraph.value = paragraphTwoConclude(
       avgMagnitude.value[2],
-      summaryData.value[0].count * freqPeak.value[0][0]
+      Math.ceil(sampleDateDiff.value / freqPeak.value[0][0])
     );
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 });
 
+const calculateDateDiff = async (stDate: number, enDate: number) => {
+  const diff = await dayjs(new Date(enDate)).diff(
+    dayjs(new Date(stDate)),
+    'day'
+  );
+  return diff;
+};
+
 const fetchData = async (id: number) => {
   try {
     const path = `/fault-data/${id}`;
+
+    const response = await axios.get(path);
+
+    if (response?.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchSeparateData = async (id: number) => {
+  try {
+    const path = `/fault-data/analyze?id=${id}&range=7`;
 
     const response = await axios.get(path);
 
