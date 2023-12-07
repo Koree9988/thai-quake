@@ -32,6 +32,8 @@ export const paragraphTwoConclude = (avg: number, days: number) => {
   )}.`;
 };
 
-// export const summaryAverageMAgnitude = ()=>{
-//   return `dwa ${}`
-// }
+export const calculationPart = (diff: number, freq: number) => {
+  return `calculate average of days range (date range / match freq) : ${diff} / ${freq} = ${(
+    diff / freq
+  ).toFixed(0)} days`;
+};

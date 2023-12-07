@@ -62,6 +62,7 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 import { useQuasar } from 'quasar';
+import { axios } from 'src/boot/axios';
 
 // const userAuth = ref<LogIn>({
 //   userName: '',
@@ -69,10 +70,11 @@ import { useQuasar } from 'quasar';
 // });
 const size = ref('md');
 const mediaWidth = ref(0);
-// const tempUser = ref({
-//   userName: 'user@1',
-//   password: 'user123**',
-// });
+const registeredUser = ref({
+  email: 'Guest',
+  uid: 'Unknow',
+  displayName: 'Unknow',
+});
 
 const q = useQuasar();
 
@@ -100,9 +102,11 @@ const onClickLoginGoogle = async () => {
     // q.loading.show();
     const result = await loginWithGoogle();
     if (result) {
-      // uid.value = result.user.uid!;
-      // email.value = result.user.email!;
-      // setAuhentication();
+      registeredUser.value.uid = result.user.uid!;
+      registeredUser.value.email = result.user.email!;
+      registeredUser.value.displayName = result.user.displayName!;
+      await registerSystemUser();
+
       router.push('/main/knownledge');
     }
   } catch (error) {
@@ -128,6 +132,25 @@ const onClickLoginFacebook = async () => {
   }
 };
 
+const registerSystemUser = async () => {
+  try {
+    const path = '/user';
+    const user = {
+      email: registeredUser.value.email,
+      displayName: registeredUser.value.displayName,
+      firebaseUid: registeredUser.value.uid,
+      role: 'NORMAL_USER',
+    };
+
+    const response = await axios.post(path, user);
+
+    if (response?.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log('🚀  error:', error);
+  }
+};
 // const checkUser = () => {
 //   try {
 //     if (!userAuth.value.userName) return alert('Please enter username');
